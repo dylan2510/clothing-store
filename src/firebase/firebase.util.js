@@ -12,6 +12,39 @@ const config = {
     measurementId: "G-XN4971H6GL"
   };
 
+  // async function
+  // takes in the userAuth object from response from google login
+  // returns the ref to the user in firestore
+  export const createUserProfileDocument = async (userAuth, additionalData) => {
+    // if no user exist, just exit
+    if (!userAuth) return;
+
+    const userRef = firestore.doc(`users/${userAuth.uid}`);
+    const snapShot = await userRef.get();
+
+    // create user if data snapshot do not exist
+    if (!snapShot.exists) {
+      // get the displayName and email from userAuth
+      const {displayName, email} = userAuth;
+      const createdAt = new Date();
+
+      try {
+        await userRef.set({
+          displayName,
+          email,
+          createdAt,
+          ...additionalData
+        });
+      } 
+      catch (error) {
+        console.log("error creating user", error.message);
+      }
+    }
+
+    return userRef;
+
+  }
+
   // Initialize Firebase
   firebase.initializeApp(config);
 

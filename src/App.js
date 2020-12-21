@@ -5,7 +5,7 @@ import HomePage from './pages/homepage.component';
 import ShopPage from './pages/shop.component';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-out.component";
-import {auth} from './firebase/firebase.util';
+import {auth,createUserProfileDocument} from './firebase/firebase.util';
 
 class App extends React.Component {
   
@@ -22,9 +22,24 @@ class App extends React.Component {
   componentDidMount(){
     // subscrible to onAuthStateChanged observer
     // this onAuthState connection is always open as long component is mounted
-    this.unsubscribleFromAuth = auth.onAuthStateChanged(user => {
-      this.setState({currentUser: user});
-      console.log(user);
+    this.unsubscribleFromAuth = auth.onAuthStateChanged(async userAuth => {
+      //this.setState({currentUser: user});
+      //console.log(user);
+      if(userAuth) {
+        const userRef = await createUserProfileDocument(userAuth);
+        userRef.onSnapshot(snapshot => {
+          this.setState({
+            currentUser : {
+              id : snapshot.id,
+              ...snapshot.data()
+            }
+          });
+        });
+      }
+      else{
+        // set to null
+        this.setState({currentUser : userAuth});
+      }
     });
   }
 
