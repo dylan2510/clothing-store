@@ -35,9 +35,9 @@ const Header = ({currentUser}) => {
 // for setting the state in reducer
 // state is the root reducer
 // user is the userReducer in root reducer. refer to root-reducer.js
-const mapStateToProps = (state) => {
+const mapStateToProps = (reducer) => {
     return {
-        currentUser: state.user.currentUser
+        currentUser: reducer.user.currentUser
     };
 }
 
