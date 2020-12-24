@@ -86,6 +86,7 @@ class App extends React.Component {
 
 }
 
+// currentUser can be accessed via props
 const mapStateToProps = (reducer) => {
   return {
       currentUser: reducer.user.currentUser
@@ -95,9 +96,10 @@ const mapStateToProps = (reducer) => {
 // map setCurrentUser action to prop so action can be accessed via this.props
 // invoke setCurrentUser action, pass in user object, setCurrentUser action
 // returns an object that is assigned to setCurrentUser
+// setCurrentUser can be accessed via props
 const mapDispatchToProps = (dispatch) => {
   return {
-    setCurrentUser: user => dispatch(setCurrentUser(user))
+    setCurrentUser: (user) => dispatch(setCurrentUser(user))
   };
 }
 
