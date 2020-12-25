@@ -13,10 +13,10 @@ const CollectionPreview = ({title, items}) => {
                     items
                     .filter((item, index) => index < 4 )
                     // resulting item is destructured into all of its properties
-                    .map(({id, ...otherItemProps}) => {
+                    .map((item) => {
                         return(
                             // pass all props of items to component as per their name
-                            <CollectionItem key={id} {...otherItemProps} />
+                            <CollectionItem key={item.id} item={item} />
                         )
                     })
                 }
