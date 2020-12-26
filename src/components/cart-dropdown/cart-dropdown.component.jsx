@@ -3,6 +3,7 @@ import CustomButton from "../custom-button/custom-button.component";
 import "./cart-dropdown.styles.scss";
 import CartItem from "../cart-item/cart-item.component";
 import {connect} from "react-redux";
+import {selectCartItems} from "../../redux/cart/cart.selectors";
 
 const CartDropdown = ({cartItems}) => {
     return (
@@ -21,13 +22,12 @@ const CartDropdown = ({cartItems}) => {
     );
 }
 
-// this function take in the base reducer which is combineReducers() created in root-reducer.js
-// the reducer.user is pointing to the userReducer as defined in combineReducers()
-// the currentUser state is accessed via the userReducer
-
 const mapStateToProps = (reducer) => {
     return {
-        cartItems: reducer.cart.cartItems
+        // cartItems: reducer.cart.cartItems
+
+        // Use Selectors instead to achieve memmonisation
+        cartItems: selectCartItems(reducer)
     };
   }
 
