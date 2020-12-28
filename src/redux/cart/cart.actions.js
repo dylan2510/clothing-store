@@ -14,3 +14,19 @@ export const addItem = (item) => {
         payload: item
     }
 }
+
+// for action.type = ADD_ITEM
+export const removeItem = (item) => {
+    return {
+        type: "REMOVE_ITEM",
+        payload: item
+    }
+}
+
+// for action.type = CLEAR_ITEM_FROM_CART
+export const clearItemFromCart = (item) => {
+    return {
+        type: "CLEAR_ITEM_FROM_CART",
+        payload: item
+    }
+}
