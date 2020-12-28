@@ -7,6 +7,9 @@ import {ReactComponent as Logo} from '../../assets/crown.svg'
 import {connect} from 'react-redux';
 import CartIcon from "../cart-icon/cart-icon.component";
 import CartDropdown from "../cart-dropdown/cart-dropdown.component";
+import {createStructuredSelector} from 'reselect';
+import {selecCurrentUser} from "../../redux/user/user.selectors.js";
+import {selectCartHidden} from "../../redux/cart/cart.selectors.js";
 
 const Header = ({currentUser, hidden}) => {
     return(
@@ -44,8 +47,12 @@ const Header = ({currentUser, hidden}) => {
 // currentUser andd hidden can be accessed via props
 const mapStateToProps = (rootReducer) => {
     return {
+        /*
         currentUser: rootReducer.user.currentUser,
         hidden: rootReducer.cart.hidden
+        */
+        currentUser: selecCurrentUser(rootReducer),
+        hidden: selectCartHidden(rootReducer)
     };
 }
 
