@@ -7,7 +7,14 @@ import {persistStore} from 'redux-persist';
 import rootReducer from "./root-reducer";
 
 // put logger in an array, assign it to var middleware
-const middlewares = [logger];
+//const middlewares = [logger];
+
+// apply logger only in dev enviroment
+// note that heroku is prod enviroment
+const middlewares = [];
+if (process.env.NODE_ENV === 'development') {
+    middlewares.push(logger);
+}
 
 // takes in rootReducer and return value of applyMiddleware()
 export const store = createStore(rootReducer, applyMiddleware(...middlewares));
