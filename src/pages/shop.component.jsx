@@ -1,30 +1,28 @@
 import React from 'react';
-import SHOP_DATA from './shop.data.js';
-import CollectionPreview from "../components/collection-preview/collection-preview.component";
+import {connect} from 'react-redux';
+import {selectShopCollections} from '../redux/shop/shop.selectors';
+import CollectionsOverview from "../components/collections-overview/collections-overview.components";
+import CollectionPage from "./category/collection.component";
 
-class ShopPage extends React.Component {
-    constructor(props){
-        super(props);
+import { Route } from 'react-router-dom';
 
-        this.state = {
-            collections : SHOP_DATA
-        }
-    }
-
-    render() {
-        const state = this.state;
-        return(
-            <div className="shop-page">
-                {
-                    state.collections.map(c => {
-                        return (
-                            <CollectionPreview key={c.id} title={c.title} items={c.items} />
-                        )
-                    })
-                }
-            </div>
-        );
-    }
+// match is a property of router
+// match.path is the current path
+// :categoryId is a parameter
+// let say if we call /shops/hats, collectionId = hats
+const ShopPage = ({match}) => {
+    return (
+        <div className="shop-page">
+            <Route exact path={`${match.path}`} component={CollectionsOverview}  />
+            <Route exact path={`${match.path}/:collectionId`} component={CollectionPage}  />
+        </div>
+    );
 }
 
-export default ShopPage;
+const mapStateToProps = (reducer) => {
+    return {
+        collections: selectShopCollections(reducer) //reducer.shop.collections
+    };
+  }
+
+export default connect(mapStateToProps)(ShopPage);
