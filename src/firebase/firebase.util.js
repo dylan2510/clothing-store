@@ -45,6 +45,54 @@ const config = {
 
   }
 
+  // Shop Data
+  export const addCollectionsAndDocuments = async (collectionKey, objectsToAdd) => {
+
+    const collectionRef = firestore.collection(collectionKey);
+    
+    // firebase can only fire one operation at a time for each obj
+    // create batch to batch all operations together
+    const batch = firestore.batch();
+
+    // foreach differs from map is that new array is not returned
+    objectsToAdd.forEach(obj => {
+      // create new doc ref with new generated id in the current collection ref
+      // set the new docRef to the object, in batch
+      const newDocRef = collectionRef.doc();
+      batch.set(newDocRef, obj);
+    });
+
+    // perform batch commit, return a promise
+    return await batch.commit();
+
+  };
+
+  export const convertCollectionsSnapshotToMap = (collections) => {
+
+    const transformedCollection = collections.docs.map(doc => {
+      // doc.data() returns the data of the document
+      // take only title and items
+      const {title, items} = doc.data();
+      // for each of the docs, return the following object in new array
+      return {
+        routeName: encodeURI(title.toLowerCase()),
+        id: doc.id,
+        title,
+        items
+      }
+    });
+
+    // console.log(transformedCollection);
+    return transformedCollection.reduce((accumulator, collection) => 
+    {
+      accumulator[collection.title.toLowerCase()] = collection;
+      return accumulator;
+    }
+    , 
+    {});
+
+  }
+
   // Initialize Firebase
   firebase.initializeApp(config);
 

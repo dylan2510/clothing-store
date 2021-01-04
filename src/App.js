@@ -5,11 +5,12 @@ import HomePage from './pages/homepage.component';
 import ShopPage from './pages/shop.component';
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from "./pages/sign-in-and-sign-out.component";
-import {auth,createUserProfileDocument} from './firebase/firebase.util';
+import {auth,createUserProfileDocument,addCollectionsAndDocuments} from './firebase/firebase.util';
 import {connect} from 'react-redux';
 import {setCurrentUser} from './redux/user/user.actions';
 import {selecCurrentUser} from "./redux/user/user.selectors";
 import CheckoutPage from "./pages/checkout/checkout.component";
+import {selectCollectionsForPreview} from "./redux/shop/shop.selectors";
 
 class App extends React.Component {
   
@@ -56,6 +57,16 @@ class App extends React.Component {
         //this.setState({currentUser : userAuth});
         this.props.setCurrentUser(userAuth);
       }
+
+      // add shop data
+      // we just want title and items data
+      /*
+      addCollectionsAndDocuments(
+        'collections',
+        this.props.collectionsArray.map(({title, items}) => ({title, items}))
+      );
+      */
+
     });
   }
 
@@ -93,7 +104,8 @@ class App extends React.Component {
 const mapStateToProps = (reducer) => {
   return {
       //reducer.user.currentUser
-      currentUser: selecCurrentUser(reducer) 
+      currentUser: selecCurrentUser(reducer),
+      collectionsArray: selectCollectionsForPreview(reducer)
   };
 }
 

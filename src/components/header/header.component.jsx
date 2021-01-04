@@ -11,8 +11,11 @@ import {createStructuredSelector} from 'reselect';
 import {selecCurrentUser} from "../../redux/user/user.selectors.js";
 import {selectCartHidden} from "../../redux/cart/cart.selectors.js";
 
+import {HeaderContainer, LogoContainer, OptionsContainer, OptionLink, OptionDiv} from "./header.styles";
+
 const Header = ({currentUser, hidden}) => {
     return(
+        /*
         <div className="header">
             <Link to="/" className="logo-container">
                 <Logo className="logo" />
@@ -37,6 +40,31 @@ const Header = ({currentUser, hidden}) => {
                 hidden ? null : <CartDropdown />
             }
         </div>
+        */
+       <HeaderContainer>
+            <LogoContainer to="/">
+                <Logo className="logo" />
+            </LogoContainer>
+            <OptionsContainer>
+                <OptionLink to="/shop">
+                    SHOP
+                </OptionLink>
+                <OptionLink to="/shop">
+                    CONTACT
+                </OptionLink>
+                {
+                    currentUser ?
+                    // call firebase.auth.signout
+                    <OptionDiv className="option" onClick={() => auth.signOut()}>Sign Out</OptionDiv>
+                    :
+                    <OptionLink to="/signin">Sign In</OptionLink>
+                }
+                <CartIcon />
+            </OptionsContainer>
+            {
+                hidden ? null : <CartDropdown />
+            }
+        </HeaderContainer>
     );
 }
 
