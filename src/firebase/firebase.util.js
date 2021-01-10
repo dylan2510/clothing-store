@@ -96,6 +96,15 @@ const config = {
   // Initialize Firebase
   firebase.initializeApp(config);
 
+  export const getCurrentUser = () => {
+    return new Promise((resolve, reject) => {
+      const unsubscribe = auth.onAuthStateChanged(userAuth => {
+        unsubscribe();
+        resolve(userAuth);
+      },reject)
+    })
+  }
+
   // export the libraries  we need
   export const auth = firebase.auth();
   export const firestore = firebase.firestore();
@@ -103,9 +112,9 @@ const config = {
   // Use google signin provider
   // always prompt the sign dialog when using google sign in
   // export the google sign in
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.setCustomParameters({prompt: 'select_account'});
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({prompt: 'select_account'});
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 // just in case we need the whole libraries
 export default firebase;

@@ -1,15 +1,17 @@
 import React from 'react';
 import {connect} from 'react-redux';
 //import {selectShopCollections} from '../redux/shop/shop.selectors';
-import CollectionsOverview from "../components/collections-overview/collections-overview.components";
-import CollectionPage from "./category/collection.component";
+//import CollectionsOverview from "../components/collections-overview/collections-overview.components";
+//import CollectionPage from "./category/collection.component";
 
 import { Route} from 'react-router-dom';
 
-import {firestore, convertCollectionsSnapshotToMap} from "../firebase/firebase.util";
-import {updateCollections} from "../redux/shop/shop.actions";
+//import WithSpinner from "../components/with-spinner/with-spinner.component";
+import CollectionsOverviewContainer from "../components/collections-overview/collections-overview.containers";
+import ContainerContainer from "./category/collection.containers";
 
-import WithSpinner from "../components/with-spinner/with-spinner.component";
+import {fetchCollectionsStart} from "../redux/shop/shop.actions";
+//import { selectIsCollectionFetching,selectIsCollectionsLoaded} from "../redux/shop/shop.selectors";
 
 // match is a property of router
 // match.path is the current path
@@ -27,21 +29,21 @@ const ShopPage = ({match}) => {
 }
 */
 
-const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
-const CollectionPageWithSpinner = WithSpinner(CollectionPage);
+/* replaced with containers */
+//const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
+//const CollectionPageWithSpinner = WithSpinner(CollectionPage);
 
 class ShopPage extends React.Component {
     
-
+    /*
     state = {
         loading: true
     };    
+    */
 
     unsubscribeFromSnapshot = null;
 
     componentDidMount() {
-        const {updateCollections} = this.props;
-        const collectionRef = firestore.collection('collections');
 
         // retrieve snapshot of the collection
         // Using observable base pattern
@@ -56,11 +58,13 @@ class ShopPage extends React.Component {
         // using promise base pattern
         // get() use api to fetch data associated with collectionRef
         // then() is the callback, after get() is called
+        /*
         collectionRef.get().then(snapshop => {
             const collectionsMap = convertCollectionsSnapshotToMap(snapshop);
             updateCollections(collectionsMap);
             this.setState({loading: false});
         });
+        */
 
         // using the API way
         // clothing-store-db-f2049 = projectId in firebase
@@ -70,22 +74,35 @@ class ShopPage extends React.Component {
         .then(response => response.json())
         .then(collections => console.log(collections));
         */
+
+        // using Redux with thunk
+        const {fetchCollectionsStart} = this.props;
+        fetchCollectionsStart();
     }
 
     render() {
-        const {match} = this.props;
-        const {loading} = this.state;
+        const {match,  /*isCollectionFetching,isCollectionLoaded */} = this.props;
+        
         return (
             <div className="shop-page">
                 <Route exact path={`${match.path}`} 
+                /*
                 render={props => (
-                    <CollectionsOverviewWithSpinner isLoading={loading} {...props} />
+                    <CollectionsOverviewWithSpinner isLoading={isCollectionFetching} {...props} />
                   )} 
+                */
+               // render replaced with containers
+                component = {CollectionsOverviewContainer}
                 />
                 <Route exact path={`${match.path}/:collectionId`}
+                    // render replaced with containers
+                    /*
                     render={props => (
-                        <CollectionPageWithSpinner isLoading={loading} {...props} />
+                        // TAKE NOTE WE USING !isCollectionLoaded here
+                        <CollectionPageWithSpinner isLoading={!isCollectionLoaded} {...props} />
                     )}
+                    */
+                   component = {ContainerContainer}
                 />
             </div>
         );
@@ -109,10 +126,32 @@ const mapStateToProps = (reducer) => {
     };
   }
 */
-  const mapDispatchToProps = (dispatch) => {
+
+/*
+const mapDispatchToProps = (dispatch) => {
     return {
         updateCollections: (collections) => dispatch(updateCollections(collections))
     };
   }
+*/
 
+
+// replaced with containers
+/*
+const mapStateToProps = (reducer) => {
+    return {
+        isCollectionFetching: selectIsCollectionFetching(reducer), // replaced with containers
+        isCollectionLoaded: selectIsCollectionsLoaded(reducer)
+    };
+};
+*/
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchCollectionsStart: () => dispatch(fetchCollectionsStart())
+    };
+}
+  
+
+//export default connect(mapStateToProps,mapDispatchToProps)(ShopPage);
 export default connect(null,mapDispatchToProps)(ShopPage);
