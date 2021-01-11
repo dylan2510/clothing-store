@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 //import {selectShopCollections} from '../redux/shop/shop.selectors';
 //import CollectionsOverview from "../components/collections-overview/collections-overview.components";
@@ -33,17 +33,11 @@ const ShopPage = ({match}) => {
 //const CollectionsOverviewWithSpinner = WithSpinner(CollectionsOverview);
 //const CollectionPageWithSpinner = WithSpinner(CollectionPage);
 
-class ShopPage extends React.Component {
-    
-    /*
-    state = {
-        loading: true
-    };    
-    */
+const ShopPage = ({fetchCollectionsStart, match}) => {
 
-    unsubscribeFromSnapshot = null;
-
-    componentDidMount() {
+    useEffect(() => {
+        fetchCollectionsStart();
+    },[fetchCollectionsStart]);
 
         // retrieve snapshot of the collection
         // Using observable base pattern
@@ -75,13 +69,6 @@ class ShopPage extends React.Component {
         .then(collections => console.log(collections));
         */
 
-        // using Redux with thunk
-        const {fetchCollectionsStart} = this.props;
-        fetchCollectionsStart();
-    }
-
-    render() {
-        const {match,  /*isCollectionFetching,isCollectionLoaded */} = this.props;
         
         return (
             <div className="shop-page">
@@ -106,52 +93,15 @@ class ShopPage extends React.Component {
                 />
             </div>
         );
-
-         /*
-        return (
-            <div className="shop-page">
-                <Route exact path={`${match.path}`} component={CollectionsOverview}  />
-                <Route exact path={`${match.path}/:collectionId`} component={CollectionPage}  />
-            </div>
-        );
-        */
-        
-    }
 }
 
-/*
-const mapStateToProps = (reducer) => {
-    return {
-        collections: selectShopCollections(reducer) //reducer.shop.collections
-    };
-  }
-*/
 
-/*
-const mapDispatchToProps = (dispatch) => {
-    return {
-        updateCollections: (collections) => dispatch(updateCollections(collections))
-    };
-  }
-*/
-
-
-// replaced with containers
-/*
-const mapStateToProps = (reducer) => {
-    return {
-        isCollectionFetching: selectIsCollectionFetching(reducer), // replaced with containers
-        isCollectionLoaded: selectIsCollectionsLoaded(reducer)
-    };
-};
-*/
 
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchCollectionsStart: () => dispatch(fetchCollectionsStart())
     };
 }
-  
 
 //export default connect(mapStateToProps,mapDispatchToProps)(ShopPage);
 export default connect(null,mapDispatchToProps)(ShopPage);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './sign-in.styles.scss';
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
@@ -6,69 +6,48 @@ import CustomButton from '../custom-button/custom-button.component';
 import {googleSignInStart, emailSignInStart} from "../../redux/user/user.actions";
 import {connect} from "react-redux";
 
-class SignIn extends React.Component {
-    constructor(props) {
-        super(props);
+//class SignIn extends React.Component {
+const SignIn = ({emailSignInStart,googleSignInStart}) => {
+    
+    const [userCredentials, setCredentials] = useState({email: "", password: ""});
 
-        this.state = {
-            email: '',
-            password: ''
-        };
-    }
+    const {email, password} = userCredentials;
 
     // form submit handler
-    handleSubmit = async (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-
-        const {emailSignInStart} = this.props;
-        const {email, password} = this.state;
-
-        /*
-        try {
-            // sign in using firebase email and password
-            await auth.signInWithEmailAndPassword(email, password);
-
-            // reset the state after sign in
-            this.setState({email: '', password: ''});
-        }
-        catch (error) {
-            console.log(error);
-        }
-        */
 
        emailSignInStart(email, password);
     };
 
     // form input change handler
-    handleChange = event => {
+    const handleChange = event => {
         // get event.target.name and event.target.value
         const {value, name} = event.target;
         // the name of the input should be the same as the name of the state
-        this.setState({[name]: value});
+        setCredentials({...userCredentials, [name]: value});
     };
 
-    render(){
-        const {googleSignInStart} = this.props;
         // Form Input component to redner from inputs for resuability
         return(
             <div className="sign-in">
                 <h2>I already have an account</h2>
                 <span>Sign in with your email and password</span>
 
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <FormInput 
                         name="email" 
                         type="email"
-                        value={this.state.email} 
-                        handleChange={this.handleChange}
+                        value={email} 
+                        handleChange={handleChange}
                         label = "Email"
                         required />
 
                     <FormInput 
                         name="password" 
                         type="password" 
-                        value={this.state.password} 
-                        handleChange={this.handleChange}
+                        value={password} 
+                        handleChange={handleChange}
                         label = "Password"
                         required />
 
@@ -79,7 +58,6 @@ class SignIn extends React.Component {
                 </form>
             </div>
         );
-    }
 }
 
 const mapDispatchToProps = (dispatch) => {

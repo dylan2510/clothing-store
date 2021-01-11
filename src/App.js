@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import './App.css';
 import HomePage from './pages/homepage.component';
@@ -13,60 +13,13 @@ import CheckoutPage from "./pages/checkout/checkout.component";
 import {selectCollectionsForPreview} from "./redux/shop/shop.selectors";
 import {checkUserSession} from "./redux/user/user.actions";
 
-class App extends React.Component {
-  
-  // Using Redux instead for state
-  /*
-  constructor(){
-    super();
+//class App extends React.Component {
+const App = ({checkUserSession, currentUser}) => {
 
-    this.state = {
-      currentUser: null
-    }
-  }
-  */
+    useEffect(() => {
+      checkUserSession();
+    },[checkUserSession]);
 
-  unsubscribleFromAuth = null;
-
-  componentDidMount(){
-
-    //const {setCurrentUser} = this.props;
-
-    // subscrible to onAuthStateChanged observer
-    // this onAuthState connection is always open as long component is mounted
-    /*
-    this.unsubscribleFromAuth = auth.onAuthStateChanged(async userAuth => {
-      if(userAuth) {
-        const userRef = await createUserProfileDocument(userAuth);
-        userRef.onSnapshot(snapshot => {
-          // using Redux instead
-          this.props.setCurrentUser({
-            id : snapshot.id,
-              ...snapshot.data()
-          });
-
-        });
-      }
-      else{
-        // set to null
-        //this.setState({currentUser : userAuth});
-        this.props.setCurrentUser(userAuth);
-      }
-
-    });
-    */
-
-    const {checkUserSession} = this.props;
-    checkUserSession();
-
-  }
-
-  componentWillUnmount() {
-    // upon unmount, unsubscrible
-    this.unsubscribleFromAuth();
-  }
-
-  render(){
     return (
       // Header is outside router switchso it will always be rendered regardless of the url
       // Header component has a prop call 'curentUser' which will be retrieved from Reducer
@@ -79,7 +32,7 @@ class App extends React.Component {
           <Route exact path="/signin" render={
             () => {
               return (
-                this.props.currentUser ?
+                currentUser ?
                 (<Redirect to="/" />) : (<SignInAndSignUpPage />)
               )
             }
@@ -87,8 +40,6 @@ class App extends React.Component {
         </Switch>
       </div>
     );
-  }
-
 }
 
 // currentUser can be accessed via props
